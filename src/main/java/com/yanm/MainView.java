@@ -1,5 +1,9 @@
 package com.yanm;
 
+import com.yanm.model.Board;
+import com.yanm.model.BoundedBoard;
+import com.yanm.model.CellState;
+import com.yanm.model.StandardRule;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,14 +28,16 @@ public class MainView extends VBox {
 
     private Affine affine;
 
-    private Simulation initialSimulation;
+    private Board initialBoard;
     private Simulation simulation;
 
+//    private Simulator simulator;
 
+    private CellState drawMode = CellState.ALIVE;
 
-    private Simulator simulator;
-
-    private int drawMode = Simulation.ALIVE;
+    public int getApplicationState() {
+        return applicationState;
+    }
 
     private int applicationState = EDITING;
 
@@ -60,8 +66,7 @@ public class MainView extends VBox {
         this.affine = new Affine();
         this.affine.appendScale(400 / 10f, 400 / 10f);
 
-        this.initialSimulation = new Simulation(10, 10);
-        this.simulation = Simulation.copy(this.initialSimulation);
+        this.initialBoard = new BoundedBoard(10, 10);
 
         draw();
     }
@@ -69,10 +74,10 @@ public class MainView extends VBox {
 
     private void onKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.D) {
-            drawMode = Simulation.ALIVE;
+            drawMode = CellState.ALIVE;
             System.out.println("Draw mode");
         } else if (keyEvent.getCode() == KeyCode.E) {
-            drawMode = Simulation.DEAD;
+            drawMode = CellState.DEAD;
             System.out.println("Erase mode");
         }
 
@@ -86,7 +91,7 @@ public class MainView extends VBox {
         int simX = (int) simCoord.getX();
         int simY = (int) simCoord.getY();
 
-        initialSimulation .setState(simX, simY, drawMode);
+        initialBoard.setState(simX, simY, drawMode);
         draw();
     }
 
@@ -114,25 +119,25 @@ public class MainView extends VBox {
         g.setFill(Color.LIGHTGRAY);
         g.fillRect(0, 0, 10, 10);
         
-        if (this.applicationState == EDITING) drawSimulation(this.initialSimulation);
-        else drawSimulation(this.simulation);
+        if (this.applicationState == EDITING) drawSimulation(this.initialBoard);
+        else drawSimulation(this.simulation.getBoard());
 
         g.setStroke(Color.GRAY);
         g.setLineWidth(0.05);
-        for (int x = 0; x <= simulation.width; x++) {
+        for (int x = 0; x <= this.initialBoard.getWidth(); x++) {
             g.strokeLine(x, 0, x, 10);
         }
-        for (int y = 0; y <= simulation.height; y++) {
+        for (int y = 0; y <= this.initialBoard.getHeight(); y++) {
             g.strokeLine(0, y, 10, y);
         }
     }
 
-    public void drawSimulation(Simulation simulation) {
+    public void drawSimulation(Board simulation2Draw) {
         GraphicsContext g = canvas.getGraphicsContext2D();
         g.setFill(Color.BLACK);
-        for (int x = 0; x < simulation.width; x++) {
-            for (int y = 0; y < simulation.height; y++) {
-                if (simulation.getState(x, y) == Simulation.ALIVE) {
+        for (int x = 0; x < simulation2Draw.getWidth(); x++) {
+            for (int y = 0; y < simulation2Draw.getHeight(); y++) {
+                if (simulation2Draw.getState(x, y) == CellState.ALIVE) {
                     g.fillRect(x, y, 1, 1);
                 }
 
@@ -140,11 +145,11 @@ public class MainView extends VBox {
         }
     }
 
-    public Simulation getSimulations() {
+    public Simulation getSimulation() {
         return simulation;
     }
 
-    public void setDrawMode(int i) {
+    public void setDrawMode(CellState i) {
         this.drawMode = i;
         this.infobar.setDrawMode(drawMode);
     }
@@ -153,16 +158,11 @@ public class MainView extends VBox {
         if (this.applicationState == applicationState) return;
 
         if (applicationState == SIMULATING) {
-            this.simulation = Simulation.copy(this.initialSimulation);
-            this.simulator = new Simulator(this.simulation, this);
+            this.simulation = new Simulation(this.initialBoard, new StandardRule());
         }
 
         this.applicationState = applicationState;
         System.out.println("Application State: " + applicationState);
     }
 
-
-    public Simulator getSimulator() {
-        return simulator;
-    }
 }

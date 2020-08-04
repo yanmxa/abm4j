@@ -1,5 +1,6 @@
 package com.yanm;
 
+import com.yanm.model.CellState;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -26,8 +27,8 @@ public class Infobar extends HBox {
         this.getChildren().addAll(this.editingTool, spacer, this.cursor);
     }
 
-    public void setDrawMode(int drawMode) {
-        String drawModeStr = drawMode == Simulation.ALIVE ? "Drawing" : "Erasing";
+    public void setDrawMode(CellState drawMode) {
+        String drawModeStr = drawMode == CellState.ALIVE ? "Drawing" : "Erasing";
         this.editingTool.setText(String.format(drawModeFormat, drawModeStr));
     }
 

@@ -1,5 +1,6 @@
 package com.yanm;
 
+import com.yanm.model.CellState;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -8,6 +9,8 @@ public class Toolbar extends ToolBar {
 
 
     private MainView mainView;
+
+    private Simulator simulator;
 
     public Toolbar(MainView mainView) {
         this.mainView = mainView;
@@ -34,31 +37,40 @@ public class Toolbar extends ToolBar {
     }
 
     private void handleStop(ActionEvent event) {
-        mainView.getSimulator().stop();
+        simulator.stop();
     }
 
     private void handleStart(ActionEvent event) {
-        mainView.setApplicationState(MainView.SIMULATING);
-        mainView.getSimulator().start();
+        switch2SimulatingState();
+        simulator.start();
     }
 
     private void handleReset(ActionEvent event) {
         mainView.setApplicationState(MainView.EDITING);
+        simulator = null;
         mainView.draw();
     }
 
     private void handleStep(ActionEvent event) {
-        mainView.setApplicationState(MainView.SIMULATING);
-        mainView.getSimulations().step();
+        switch2SimulatingState();
+        mainView.getSimulation().step();
         mainView.draw();
     }
 
     private void handleErase(ActionEvent event) {
-        this.mainView.setDrawMode(Simulation.DEAD);
+        this.mainView.setDrawMode(CellState.DEAD);
     }
 
     private void handleDraw(ActionEvent event) {
-        this.mainView.setDrawMode(Simulation.ALIVE);
+        this.mainView.setDrawMode(CellState.ALIVE);
+    }
+
+
+    private void switch2SimulatingState() {
+        if (this.mainView.getApplicationState() == MainView.EDITING) {
+            mainView.setApplicationState(MainView.SIMULATING);
+            simulator = new Simulator(mainView.getSimulation(), mainView);
+        }
     }
 
 
