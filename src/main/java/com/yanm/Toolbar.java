@@ -1,19 +1,22 @@
 package com.yanm;
 
 import com.yanm.model.CellState;
+import com.yanm.model.StandardRule;
+import com.yanm.viewmodel.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 
 public class Toolbar extends ToolBar {
 
+    private EditorViewModel editorViewModel;
+    private ApplicationViewModel applicationViewModel;
+     private SimulationViewModel simulationViewModel;
 
-    private MainView mainView;
-
-    private Simulator simulator;
-
-    public Toolbar(MainView mainView) {
-        this.mainView = mainView;
+    public Toolbar(EditorViewModel editorViewModel, ApplicationViewModel appViewModel, SimulationViewModel simulationViewModel) {
+        this.editorViewModel = editorViewModel;
+        this.applicationViewModel = appViewModel;
+        this.simulationViewModel = simulationViewModel;
 
         Button draw = new Button("Draw");
         draw.setOnAction(this::handleDraw);
@@ -37,40 +40,36 @@ public class Toolbar extends ToolBar {
     }
 
     private void handleStop(ActionEvent event) {
-        simulator.stop();
+        simulationViewModel.stop();
     }
 
     private void handleStart(ActionEvent event) {
         switch2SimulatingState();
-        simulator.start();
+        simulationViewModel.start();
     }
 
     private void handleReset(ActionEvent event) {
-        mainView.setApplicationState(MainView.EDITING);
-        simulator = null;
-        mainView.draw();
+        applicationViewModel.setCurrentState(ApplicationState.EDITING);
     }
 
     private void handleStep(ActionEvent event) {
         switch2SimulatingState();
-        mainView.getSimulation().step();
-        mainView.draw();
+        simulationViewModel.doStep();
     }
 
     private void handleErase(ActionEvent event) {
-        this.mainView.setDrawMode(CellState.DEAD);
+        editorViewModel.setDrawMode(CellState.DEAD);
     }
 
     private void handleDraw(ActionEvent event) {
-        this.mainView.setDrawMode(CellState.ALIVE);
+        editorViewModel.setDrawMode(CellState.ALIVE);
     }
 
 
     private void switch2SimulatingState() {
-        if (this.mainView.getApplicationState() == MainView.EDITING) {
-            mainView.setApplicationState(MainView.SIMULATING);
-            simulator = new Simulator(mainView.getSimulation(), mainView);
-        }
+        applicationViewModel.setCurrentState(ApplicationState.SIMULATING);
+//        Simulation simulation = new Simulation(boardViewModel.getBoard(), new StandardRule());
+//        simulationViewModel = new SimulationViewModel(simulation, this.boardViewModel);
     }
 
 

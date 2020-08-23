@@ -1,6 +1,7 @@
 package com.yanm;
 
 import com.yanm.model.CellState;
+import com.yanm.viewmodel.EditorViewModel;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -14,7 +15,8 @@ public class Infobar extends HBox {
     private Label cursor;
     private Label editingTool;
 
-    public Infobar() {
+    public Infobar(EditorViewModel editorViewModel) {
+        editorViewModel.listenToDrawMode(this::setDrawMode);
 
         this.cursor = new Label("Cursor: (0, 0)");
         this.editingTool = new Label("Draw Mode: Drawing");
@@ -27,7 +29,7 @@ public class Infobar extends HBox {
         this.getChildren().addAll(this.editingTool, spacer, this.cursor);
     }
 
-    public void setDrawMode(CellState drawMode) {
+    private void setDrawMode(CellState drawMode) {
         String drawModeStr = drawMode == CellState.ALIVE ? "Drawing" : "Erasing";
         this.editingTool.setText(String.format(drawModeFormat, drawModeStr));
     }
