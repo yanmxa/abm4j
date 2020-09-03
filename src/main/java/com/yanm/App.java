@@ -2,6 +2,7 @@ package com.yanm;
 
 import com.yanm.model.Board;
 import com.yanm.model.BoundedBoard;
+import com.yanm.view.SimulationCanvas;
 import com.yanm.viewmodel.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,17 +14,26 @@ public class App extends Application {
 
         ApplicationViewModel appViewModel = new ApplicationViewModel(ApplicationState.EDITING);
         BoardViewModel boardViewModel = new BoardViewModel();
-        Board initialBoard = new BoundedBoard(10, 10);
+        Board initialBoard = new BoundedBoard(14, 14);
         EditorViewModel editorViewModel = new EditorViewModel(boardViewModel, initialBoard);
         SimulationViewModel simulationViewModel = new SimulationViewModel(boardViewModel);
 
         appViewModel.listenToAppState(editorViewModel::onAppStateChanged);
         appViewModel.listenToAppState(simulationViewModel::onAppStateChanged);
 
-        MainView mainView = new MainView(appViewModel, boardViewModel, editorViewModel, simulationViewModel);
         boardViewModel.setBoard(initialBoard);
-        Scene scene = new Scene(mainView, 640, 480);
 
+        SimulationCanvas simulationCanvas = new SimulationCanvas(editorViewModel, boardViewModel);
+        Toolbar toolbar = new Toolbar(editorViewModel, appViewModel, simulationViewModel);
+        Infobar infobar = new Infobar(editorViewModel);
+
+        MainView mainView = new MainView(editorViewModel);
+        mainView.setTop(toolbar);
+        mainView.setCenter(simulationCanvas);
+        mainView.setBottom(infobar);
+
+
+        Scene scene = new Scene(mainView, 1200, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

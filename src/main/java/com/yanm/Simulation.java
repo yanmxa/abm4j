@@ -4,7 +4,6 @@ import com.yanm.model.Board;
 import com.yanm.model.CellState;
 import com.yanm.model.SimulationRule;
 
-import static com.yanm.model.CellState.ALIVE;
 
 public class Simulation {
 
@@ -19,8 +18,8 @@ public class Simulation {
     public void step() {
 
         Board nextBoard = simulationBoard.copy();
-        for (int y = 0; y < simulationBoard.getWidth(); y++) {
-            for (int x = 0; x < simulationBoard.getHeight(); x++) {
+        for (int y = 0; y < simulationBoard.getHeight(); y++) {
+            for (int x = 0; x < simulationBoard.getWidth(); x++) {
                 CellState nextState = simulationRule.getNextState(x, y, simulationBoard);
                 nextBoard.setState(x, y, nextState);
             }

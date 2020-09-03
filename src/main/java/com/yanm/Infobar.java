@@ -26,6 +26,8 @@ public class Infobar extends HBox {
         spacer.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        this.setCursorPosition(0, 0);
+
         this.getChildren().addAll(this.editingTool, spacer, this.cursor);
     }
 

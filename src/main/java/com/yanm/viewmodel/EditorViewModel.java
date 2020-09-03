@@ -2,7 +2,6 @@ package com.yanm.viewmodel;
 
 import com.yanm.model.Board;
 import com.yanm.model.CellState;
-import javafx.scene.control.Cell;
 
 import java.util.LinkedList;
 import java.util.List;
