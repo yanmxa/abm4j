@@ -14,7 +14,7 @@ public class App extends Application {
 
         ApplicationViewModel appViewModel = new ApplicationViewModel();
         BoardViewModel boardViewModel = new BoardViewModel();
-        Board initialBoard = new BoundedBoard(14, 14);
+        Board initialBoard = new BoundedBoard(18, 14);
         EditorViewModel editorViewModel = new EditorViewModel(boardViewModel, initialBoard);
         SimulationViewModel simulationViewModel = new SimulationViewModel(boardViewModel);
 

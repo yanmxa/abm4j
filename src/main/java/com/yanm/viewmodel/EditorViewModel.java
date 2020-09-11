@@ -2,11 +2,13 @@ package com.yanm.viewmodel;
 
 import com.yanm.common.Property;
 import com.yanm.model.Board;
+import com.yanm.model.CellPosition;
 import com.yanm.model.CellState;
 
 public class EditorViewModel {
 
     private Property<CellState> drawMode = new Property<>(CellState.ALIVE);
+    private Property<CellPosition> cursorPosition = new Property<>();
 
     private BoardViewModel boardViewModel;
     private Board editorBoard;
@@ -28,14 +30,18 @@ public class EditorViewModel {
     }
 
 
-    public void boardPressed(int simX, int simY) {
+    public void boardPressed(CellPosition cellPosition) {
         if (drawingEnabled) {
-            editorBoard.setState(simX, simY, drawMode.get());
+            editorBoard.setState(cellPosition.getX(), cellPosition.getY(), drawMode.get());
             boardViewModel.getBoard().set(editorBoard);
         }
     }
 
     public Property<CellState> getDrawMode() {
         return drawMode;
+    }
+
+    public Property<CellPosition> getCursorPosition() {
+        return cursorPosition;
     }
 }
