@@ -1,35 +1,19 @@
 package com.yanm.viewmodel;
 
 import com.yanm.model.Board;
+import com.yanm.common.Property;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class BoardViewModel {
 
-    private Board board;
+    private Property<Board> board = new Property<>();
     private List<SimpleChangeListener<Board>> boardListeners;
 
     public BoardViewModel() {
-        boardListeners = new LinkedList<>();
     }
 
-    public void listenToBoard(SimpleChangeListener<Board> listener) {
-        boardListeners.add(listener);
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-        notifyBoardListeners();
-    }
-
-    private void notifyBoardListeners() {
-        for (SimpleChangeListener<Board> boardListener : boardListeners) {
-            boardListener.valueChanged(this.board);
-        }
-    }
-
-    public Board getBoard() {
+    public Property<Board> getBoard() {
         return board;
     }
 }

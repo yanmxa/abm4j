@@ -49,7 +49,7 @@ public class Toolbar extends ToolBar {
     }
 
     private void handleReset(ActionEvent event) {
-        applicationViewModel.setCurrentState(ApplicationState.EDITING);
+        applicationViewModel.getApplicationState().set(ApplicationState.EDITING);
     }
 
     private void handleStep(ActionEvent event) {
@@ -58,16 +58,16 @@ public class Toolbar extends ToolBar {
     }
 
     private void handleErase(ActionEvent event) {
-        editorViewModel.setDrawMode(CellState.DEAD);
+        editorViewModel.getDrawMode().set(CellState.DEAD);
     }
 
     private void handleDraw(ActionEvent event) {
-        editorViewModel.setDrawMode(CellState.ALIVE);
+        editorViewModel.getDrawMode().set(CellState.ALIVE);
     }
 
 
     private void switch2SimulatingState() {
-        applicationViewModel.setCurrentState(ApplicationState.SIMULATING);
+        applicationViewModel.getApplicationState().set(ApplicationState.SIMULATING);
 //        Simulation simulation = new Simulation(boardViewModel.getBoard(), new StandardRule());
 //        simulationViewModel = new SimulationViewModel(simulation, this.boardViewModel);
     }

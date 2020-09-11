@@ -12,16 +12,16 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        ApplicationViewModel appViewModel = new ApplicationViewModel(ApplicationState.EDITING);
+        ApplicationViewModel appViewModel = new ApplicationViewModel();
         BoardViewModel boardViewModel = new BoardViewModel();
         Board initialBoard = new BoundedBoard(14, 14);
         EditorViewModel editorViewModel = new EditorViewModel(boardViewModel, initialBoard);
         SimulationViewModel simulationViewModel = new SimulationViewModel(boardViewModel);
 
-        appViewModel.listenToAppState(editorViewModel::onAppStateChanged);
-        appViewModel.listenToAppState(simulationViewModel::onAppStateChanged);
+        appViewModel.getApplicationState().listen(editorViewModel::onAppStateChanged);
+        appViewModel.getApplicationState().listen(simulationViewModel::onAppStateChanged);
 
-        boardViewModel.setBoard(initialBoard);
+        boardViewModel.getBoard().set(initialBoard);
 
         SimulationCanvas simulationCanvas = new SimulationCanvas(editorViewModel, boardViewModel);
         Toolbar toolbar = new Toolbar(editorViewModel, appViewModel, simulationViewModel);

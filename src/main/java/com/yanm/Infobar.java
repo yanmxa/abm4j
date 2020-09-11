@@ -16,7 +16,7 @@ public class Infobar extends HBox {
     private Label editingTool;
 
     public Infobar(EditorViewModel editorViewModel) {
-        editorViewModel.listenToDrawMode(this::setDrawMode);
+        editorViewModel.getDrawMode().listen(this::setDrawMode);
 
         this.cursor = new Label("Cursor: (0, 0)");
         this.editingTool = new Label("Draw Mode: Drawing");
