@@ -1,14 +1,14 @@
 package com.yanm.view;
 
+import com.yanm.common.event.EventBus;
 import com.yanm.model.Board;
 import com.yanm.model.CellPosition;
 import com.yanm.model.CellState;
+import com.yanm.logic.BoardEvent;
 import com.yanm.viewmodel.BoardViewModel;
-import com.yanm.viewmodel.EditorViewModel;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Cell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -19,15 +19,15 @@ public class SimulationCanvas extends Pane {
 
     private Canvas canvas;
     private Affine affine;
-    private EditorViewModel editorViewModel;
     private BoardViewModel boardViewModel;
 
+    private EventBus eventBus;
 
-    public SimulationCanvas(EditorViewModel editorViewModel, BoardViewModel boardViewModel) {
-        this.editorViewModel = editorViewModel;
+    public SimulationCanvas(BoardViewModel boardViewModel, EventBus eventBus) {
         this.boardViewModel = boardViewModel;
+        this.eventBus = eventBus;
         boardViewModel.getBoard().listen(this::draw);
-        editorViewModel.getCursorPosition().listen(cellPosition -> draw(boardViewModel.getBoard().get()));
+        boardViewModel.getCursorPosition().listen(cellPosition -> draw(boardViewModel.getBoard().get()));
 
         this.canvas = new Canvas(400, 400);
         this.canvas.setOnMousePressed(this::handleDraw);
@@ -54,12 +54,14 @@ public class SimulationCanvas extends Pane {
 
     private void handleDraw(MouseEvent event) {
         CellPosition cursorPosition = getSimulationCoordinates(event);
-        this.editorViewModel.boardPressed(cursorPosition);
+        BoardEvent boardEvent = new BoardEvent(BoardEvent.Type.CURSOR_PRESSED, cursorPosition);
+        eventBus.emit(boardEvent);
     }
 
     private void handleCursorMoved(MouseEvent mouseEvent) {
         CellPosition cursorPosition = this.getSimulationCoordinates(mouseEvent);
-        this.editorViewModel.getCursorPosition().set(cursorPosition);
+        BoardEvent boardEvent = new BoardEvent(BoardEvent.Type.CURSOR_MOVED, cursorPosition);
+        eventBus.emit(boardEvent);
     }
 
     private CellPosition getSimulationCoordinates(MouseEvent event) {
@@ -83,8 +85,8 @@ public class SimulationCanvas extends Pane {
 
         drawSimulation(board);
 
-        CellPosition cursor = editorViewModel.getCursorPosition().get();
-        if (editorViewModel.getCursorPosition().isPresent()) {
+        if (boardViewModel.getCursorPosition().isPresent()) {
+            CellPosition cursor = boardViewModel.getCursorPosition().get();
             g.setFill(new Color(0.3, 0.3,0.3, 0.5));
             g.fillRect(cursor.getX(), cursor.getY(), 1, 1);
         }

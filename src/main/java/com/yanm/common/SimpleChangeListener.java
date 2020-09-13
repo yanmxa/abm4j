@@ -1,4 +1,4 @@
-package com.yanm.viewmodel;
+package com.yanm.common;
 
 public interface SimpleChangeListener<V> {
     void valueChanged(V value);

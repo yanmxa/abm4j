@@ -1,4 +1,4 @@
-package com.yanm;
+package com.yanm.model;
 
 import com.yanm.model.Board;
 import com.yanm.model.CellState;

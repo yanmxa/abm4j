@@ -1,7 +1,5 @@
 package com.yanm.common;
 
-import com.yanm.viewmodel.SimpleChangeListener;
-
 import java.util.LinkedList;
 import java.util.List;
 

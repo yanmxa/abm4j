@@ -1,4 +1,4 @@
-package com.yanm.viewmodel;
+package com.yanm.logic;
 
 public enum ApplicationState {
     SIMULATING,

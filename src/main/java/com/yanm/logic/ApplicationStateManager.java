@@ -1,8 +1,8 @@
-package com.yanm.viewmodel;
+package com.yanm.logic;
 
 import com.yanm.common.Property;
 
-public class ApplicationViewModel {
+public class ApplicationStateManager {
 
     private Property<ApplicationState> applicationState = new Property<>(ApplicationState.EDITING);
 

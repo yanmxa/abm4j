@@ -1,7 +1,9 @@
-package com.yanm;
+package com.yanm.view;
 
+import com.yanm.model.CellPosition;
 import com.yanm.model.CellState;
-import com.yanm.viewmodel.EditorViewModel;
+import com.yanm.logic.Editor;
+import com.yanm.viewmodel.InfoBarViewModel;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -15,18 +17,17 @@ public class Infobar extends HBox {
     private Label cursor;
     private Label editingTool;
 
-    public Infobar(EditorViewModel editorViewModel) {
-        editorViewModel.getDrawMode().listen(this::setDrawMode);
-
+    public Infobar(InfoBarViewModel infoBarViewModel) {
         this.cursor = new Label("Cursor: (0, 0)");
         this.editingTool = new Label("Draw Mode: Drawing");
+
+        infoBarViewModel.getCurrentDrawMode().listen(this::setDrawMode);
+        infoBarViewModel.getCusorPosition().listen(this::setCursorPosition);
 
         Pane spacer = new Pane();
         spacer.setMinSize(0, 0 );
         spacer.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        this.setCursorPosition(0, 0);
 
         this.getChildren().addAll(this.editingTool, spacer, this.cursor);
     }
@@ -36,7 +37,7 @@ public class Infobar extends HBox {
         this.editingTool.setText(String.format(drawModeFormat, drawModeStr));
     }
 
-    public void setCursorPosition(int x, int y) {
-        this.cursor.setText(String.format(cusorPosFormat, x, y));
+    private void setCursorPosition(CellPosition cursorPosition) {
+        this.cursor.setText(String.format(cusorPosFormat, cursorPosition.getX(), cursorPosition.getY()));
     }
 }
