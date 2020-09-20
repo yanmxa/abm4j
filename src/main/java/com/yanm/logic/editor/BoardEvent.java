@@ -1,4 +1,4 @@
-package com.yanm.logic;
+package com.yanm.logic.editor;
 
 import com.yanm.common.event.Event;
 import com.yanm.model.CellPosition;

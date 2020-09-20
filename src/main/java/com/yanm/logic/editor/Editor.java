@@ -1,5 +1,6 @@
-package com.yanm.logic;
+package com.yanm.logic.editor;
 
+import com.yanm.logic.ApplicationState;
 import com.yanm.model.CellPosition;
 import com.yanm.state.EditorState;
 

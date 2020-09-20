@@ -1,5 +1,6 @@
-package com.yanm.logic;
+package com.yanm.logic.editor;
 
+import com.yanm.logic.editor.EditorCommand;
 import com.yanm.model.Board;
 import com.yanm.model.CellPosition;
 import com.yanm.model.CellState;

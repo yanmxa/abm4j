@@ -2,9 +2,15 @@ package com.yanm;
 
 import com.yanm.common.event.EventBus;
 import com.yanm.logic.*;
+import com.yanm.logic.editor.BoardEvent;
+import com.yanm.logic.editor.DrawModeEvent;
+import com.yanm.logic.editor.Editor;
+import com.yanm.logic.simulator.Simulator;
+import com.yanm.logic.simulator.SimulatorEvent;
 import com.yanm.model.Board;
 import com.yanm.model.BoundedBoard;
 import com.yanm.state.EditorState;
+import com.yanm.state.SimulatorState;
 import com.yanm.view.InfoBar;
 import com.yanm.view.MainView;
 import com.yanm.view.SimulationCanvas;
@@ -20,7 +26,7 @@ public class App extends Application {
 
         EventBus eventBus = new EventBus();
 
-        ApplicationStateManager appStateManager = new ApplicationStateManager();
+        ApplicationStateManager appViewModel = new ApplicationStateManager();
         BoardViewModel boardViewModel = new BoardViewModel();
         Board initialBoard = new BoundedBoard(20, 12);
 
@@ -32,19 +38,21 @@ public class App extends Application {
             boardViewModel.getCursorPosition().set(cursorPosition);
         });
 
-        Simulator simulator = new Simulator(appStateManager);
+        SimulatorState simulatorState = new SimulatorState(initialBoard);
+        Simulator simulator = new Simulator(appViewModel, simulatorState);
         eventBus.listenFor(SimulatorEvent.class, simulator::handle);
         editorState.getEditorBoard().listen(editorBoard -> {
-            simulator.getInitialBoard().set(editorBoard);
+            simulatorState.getBoard().set(editorBoard);
             boardViewModel.getBoard().set(editorBoard);
         });
-        simulator.getCurrentBoard().listen(simlationBoard -> {
+        simulatorState.getBoard().listen(simlationBoard -> {
             boardViewModel.getBoard().set(simlationBoard);
         });
 
-        appStateManager.getApplicationState().listen(editor::onAppStateChanged);
-        appStateManager.getApplicationState().listen(newState -> {
+        appViewModel.getApplicationState().listen(editor::onAppStateChanged);
+        appViewModel.getApplicationState().listen(newState -> {
             if (newState == ApplicationState.EDITING) {
+                simulatorState.getBoard().set(editorState.getEditorBoard().get());
                 boardViewModel.getBoard().set(editorState.getEditorBoard().get());
             }
         });

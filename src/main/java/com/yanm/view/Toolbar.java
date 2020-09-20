@@ -1,8 +1,8 @@
 package com.yanm.view;
 
 import com.yanm.common.event.EventBus;
-import com.yanm.logic.DrawModeEvent;
-import com.yanm.logic.SimulatorEvent;
+import com.yanm.logic.editor.DrawModeEvent;
+import com.yanm.logic.simulator.SimulatorEvent;
 import com.yanm.model.CellState;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;

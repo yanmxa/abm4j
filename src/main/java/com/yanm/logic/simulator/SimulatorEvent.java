@@ -1,4 +1,4 @@
-package com.yanm.logic;
+package com.yanm.logic.simulator;
 
 import com.yanm.common.event.Event;
 

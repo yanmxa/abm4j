@@ -1,7 +1,7 @@
 package com.yanm.view;
 
 import com.yanm.common.event.EventBus;
-import com.yanm.logic.DrawModeEvent;
+import com.yanm.logic.editor.DrawModeEvent;
 import com.yanm.model.CellState;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;

@@ -1,9 +1,10 @@
-package com.yanm.logic;
+package com.yanm.logic.simulator;
 
-import com.yanm.common.Property;
-import com.yanm.model.Board;
+import com.yanm.logic.ApplicationState;
+import com.yanm.logic.ApplicationStateManager;
 import com.yanm.model.Simulation;
 import com.yanm.model.StandardRule;
+import com.yanm.state.SimulatorState;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -14,11 +15,12 @@ public class Simulator {
     private Simulation simulation;
     private ApplicationStateManager applicationStateManager;
 
-    private Property<Board> initialBoard = new Property<>();
-    private Property<Board> currentBoard = new Property<>();
+    private SimulatorState state;
+    private boolean reset = true;
 
-    public Simulator(ApplicationStateManager applicationStateManager) {
+    public Simulator(ApplicationStateManager applicationStateManager, SimulatorState state) {
         this.applicationStateManager = applicationStateManager;
+        this.state = state;
 
         this.timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> step()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
@@ -42,13 +44,18 @@ public class Simulator {
     }
 
     private void step() {
-        if (applicationStateManager.getApplicationState().get() != ApplicationState.SIMULATING) {
-            simulation = new Simulation(initialBoard.get(), new StandardRule());
+        if (reset) {
+            reset = false;
+            simulation = new Simulation(state.getBoard().get(), new StandardRule());
             applicationStateManager.getApplicationState().set(ApplicationState.SIMULATING);
         }
 
         simulation.step();
-        currentBoard.set(simulation.getBoard());
+
+        SimulatorCommond command = (state) -> {
+            state.getBoard().set(simulation.getBoard());
+        };
+        command.execute(state);
     }
 
     private void start() {
@@ -60,14 +67,8 @@ public class Simulator {
     }
 
     private void reset() {
+        reset = true;
         applicationStateManager.getApplicationState().set(ApplicationState.EDITING);
     }
 
-    public Property<Board> getInitialBoard() {
-        return initialBoard;
-    }
-
-    public Property<Board> getCurrentBoard() {
-        return currentBoard;
-    }
 }

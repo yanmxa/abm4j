@@ -4,7 +4,7 @@ import com.yanm.common.event.EventBus;
 import com.yanm.model.Board;
 import com.yanm.model.CellPosition;
 import com.yanm.model.CellState;
-import com.yanm.logic.BoardEvent;
+import com.yanm.logic.editor.BoardEvent;
 import com.yanm.viewmodel.BoardViewModel;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
