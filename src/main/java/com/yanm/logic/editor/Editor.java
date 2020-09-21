@@ -1,5 +1,6 @@
 package com.yanm.logic.editor;
 
+import com.yanm.command.CommandExecutor;
 import com.yanm.logic.ApplicationState;
 import com.yanm.model.CellPosition;
 import com.yanm.state.EditorState;
@@ -7,16 +8,18 @@ import com.yanm.state.EditorState;
 public class Editor {
 
     private EditorState state;
+    private CommandExecutor commandExecutor;
 
     private boolean drawingEnabled = true;
 
-    public Editor(EditorState state) {
+    public Editor(EditorState state, CommandExecutor commandExecutor) {
         this.state = state;
+        this.commandExecutor = commandExecutor;
     }
 
     public void handle(DrawModeEvent event) {
         DrawModeCommand command = new DrawModeCommand(event.getDrawMode());
-        command.execute(state);
+        commandExecutor.execute(command);
     }
 
     public void handle(BoardEvent boardEvent) {
@@ -43,16 +46,14 @@ public class Editor {
         cursorPositionChanged(cursorPosition);
         if (drawingEnabled) {
             BoardEditCommand command = new BoardEditCommand(cursorPosition, state.getDrawMode().get());
-            command.execute(state);
+            commandExecutor.execute(command);
         }
     }
 
     private void cursorPositionChanged(CellPosition cursorPosition) {
         // define a anonymous class to implement EditorCommand, and new an instance command
-        EditorCommand command = (state) -> {
-            state.getCursorPosition().set(cursorPosition);
-        };
-        command.execute(state);
+        EditorCommand command = (state) -> state.getCursorPosition().set(cursorPosition);
+        commandExecutor.execute(command);
     }
 
 

@@ -1,5 +1,6 @@
 package com.yanm.logic.simulator;
 
+import com.yanm.command.CommandExecutor;
 import com.yanm.logic.ApplicationState;
 import com.yanm.logic.ApplicationStateManager;
 import com.yanm.model.Simulation;
@@ -16,11 +17,13 @@ public class Simulator {
     private ApplicationStateManager applicationStateManager;
 
     private SimulatorState state;
+    private CommandExecutor commandExecutor;
     private boolean reset = true;
 
-    public Simulator(ApplicationStateManager applicationStateManager, SimulatorState state) {
+    public Simulator(ApplicationStateManager applicationStateManager, SimulatorState state, CommandExecutor commandExecutor) {
         this.applicationStateManager = applicationStateManager;
         this.state = state;
+        this.commandExecutor = commandExecutor;
 
         this.timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> step()));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
@@ -52,10 +55,8 @@ public class Simulator {
 
         simulation.step();
 
-        SimulatorCommond command = (state) -> {
-            state.getBoard().set(simulation.getBoard());
-        };
-        command.execute(state);
+        SimulatorCommond command = (state) -> state.getBoard().set(simulation.getBoard());
+        commandExecutor.execute(command);
     }
 
     private void start() {

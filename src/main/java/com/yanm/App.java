@@ -1,5 +1,6 @@
 package com.yanm;
 
+import com.yanm.command.CommandExecutor;
 import com.yanm.common.event.EventBus;
 import com.yanm.logic.*;
 import com.yanm.logic.editor.BoardEvent;
@@ -11,6 +12,7 @@ import com.yanm.model.Board;
 import com.yanm.model.BoundedBoard;
 import com.yanm.state.EditorState;
 import com.yanm.state.SimulatorState;
+import com.yanm.state.StateRegistry;
 import com.yanm.view.InfoBar;
 import com.yanm.view.MainView;
 import com.yanm.view.SimulationCanvas;
@@ -25,13 +27,16 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         EventBus eventBus = new EventBus();
+        StateRegistry stateRegistry = new StateRegistry();
+        CommandExecutor commandExecutor = new CommandExecutor(stateRegistry);
 
         ApplicationStateManager appViewModel = new ApplicationStateManager();
         BoardViewModel boardViewModel = new BoardViewModel();
         Board initialBoard = new BoundedBoard(20, 12);
 
         EditorState editorState = new EditorState(initialBoard);
-        Editor editor = new Editor(editorState);
+        stateRegistry.registry(EditorState.class, editorState);
+        Editor editor = new Editor(editorState, commandExecutor);
         eventBus.listenFor(DrawModeEvent.class, editor::handle);
         eventBus.listenFor(BoardEvent.class, editor::handle);
         editorState.getCursorPosition().listen(cursorPosition -> {
@@ -39,7 +44,8 @@ public class App extends Application {
         });
 
         SimulatorState simulatorState = new SimulatorState(initialBoard);
-        Simulator simulator = new Simulator(appViewModel, simulatorState);
+        stateRegistry.registry(SimulatorState.class, simulatorState);
+        Simulator simulator = new Simulator(appViewModel, simulatorState, commandExecutor);
         eventBus.listenFor(SimulatorEvent.class, simulator::handle);
         editorState.getEditorBoard().listen(editorBoard -> {
             simulatorState.getBoard().set(editorBoard);
