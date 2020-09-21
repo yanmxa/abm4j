@@ -1,4 +1,4 @@
-package com.yanm.gol.viewmodel;
+package com.yanm.gol.components.infobar;
 
 import com.yanm.app.observable.Property;
 import com.yanm.gol.model.CellPosition;

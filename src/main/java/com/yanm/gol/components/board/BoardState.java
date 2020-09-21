@@ -1,13 +1,13 @@
-package com.yanm.gol.state;
+package com.yanm.gol.components.board;
 
 import com.yanm.app.observable.Property;
 import com.yanm.gol.model.Board;
 
-public class SimulatorState {
+public class BoardState {
 
     private Property<Board> board = new Property<>();
 
-    public SimulatorState(Board board) {
+    public BoardState(Board board) {
         this.board.set(board);
     }
 

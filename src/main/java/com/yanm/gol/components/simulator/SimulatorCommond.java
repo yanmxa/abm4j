@@ -1,7 +1,6 @@
-package com.yanm.gol.logic.simulator;
+package com.yanm.gol.components.simulator;
 
 import com.yanm.app.command.Command;
-import com.yanm.gol.state.SimulatorState;
 
 public interface SimulatorCommond extends Command<SimulatorState> {
     @Override

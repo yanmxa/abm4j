@@ -1,9 +1,8 @@
-package com.yanm.gol.logic.editor;
+package com.yanm.gol.components.editor;
 
 import com.yanm.gol.model.Board;
 import com.yanm.gol.model.CellPosition;
 import com.yanm.gol.model.CellState;
-import com.yanm.gol.state.EditorState;
 
 public class BoardEditCommand implements EditorCommand {
 

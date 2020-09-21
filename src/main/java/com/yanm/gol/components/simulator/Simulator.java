@@ -1,11 +1,8 @@
-package com.yanm.gol.logic.simulator;
+package com.yanm.gol.components.simulator;
 
 import com.yanm.app.command.CommandExecutor;
-import com.yanm.gol.logic.ApplicationState;
-import com.yanm.gol.logic.ApplicationStateManager;
 import com.yanm.gol.model.Simulation;
 import com.yanm.gol.model.StandardRule;
-import com.yanm.gol.state.SimulatorState;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -14,14 +11,12 @@ public class Simulator {
 
     private Timeline timeline;
     private Simulation simulation;
-    private ApplicationStateManager applicationStateManager;
 
     private SimulatorState state;
     private CommandExecutor commandExecutor;
     private boolean reset = true;
 
-    public Simulator(ApplicationStateManager applicationStateManager, SimulatorState state, CommandExecutor commandExecutor) {
-        this.applicationStateManager = applicationStateManager;
+    public Simulator(SimulatorState state, CommandExecutor commandExecutor) {
         this.state = state;
         this.commandExecutor = commandExecutor;
 
@@ -50,7 +45,7 @@ public class Simulator {
         if (reset) {
             reset = false;
             simulation = new Simulation(state.getBoard().get(), new StandardRule());
-            applicationStateManager.getApplicationState().set(ApplicationState.SIMULATING);
+            state.getSimulating().set(true);
         }
 
         simulation.step();
@@ -69,7 +64,7 @@ public class Simulator {
 
     private void reset() {
         reset = true;
-        applicationStateManager.getApplicationState().set(ApplicationState.EDITING);
+        state.getSimulating().set(false);
     }
 
 }

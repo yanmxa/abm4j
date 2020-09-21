@@ -1,7 +1,6 @@
-package com.yanm.gol.logic.editor;
+package com.yanm.gol.components.editor;
 
 import com.yanm.app.command.Command;
-import com.yanm.gol.state.EditorState;
 
 public interface EditorCommand extends Command<EditorState> {
 

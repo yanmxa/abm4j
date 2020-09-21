@@ -1,4 +1,4 @@
-package com.yanm.gol.logic.simulator;
+package com.yanm.gol.components.simulator;
 
 import com.yanm.app.event.Event;
 

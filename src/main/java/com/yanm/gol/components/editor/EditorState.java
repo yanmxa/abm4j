@@ -1,4 +1,4 @@
-package com.yanm.gol.state;
+package com.yanm.gol.components.editor;
 
 import com.yanm.app.observable.Property;
 import com.yanm.gol.model.Board;

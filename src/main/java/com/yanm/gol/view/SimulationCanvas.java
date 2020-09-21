@@ -1,11 +1,10 @@
 package com.yanm.gol.view;
 
 import com.yanm.app.event.EventBus;
+import com.yanm.gol.components.editor.BoardEvent;
 import com.yanm.gol.model.Board;
 import com.yanm.gol.model.CellPosition;
 import com.yanm.gol.model.CellState;
-import com.yanm.gol.logic.editor.BoardEvent;
-import com.yanm.gol.viewmodel.BoardViewModel;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,19 +14,22 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+
 public class SimulationCanvas extends Pane {
 
     private Canvas canvas;
+
     private Affine affine;
-    private BoardViewModel boardViewModel;
 
     private EventBus eventBus;
 
-    public SimulationCanvas(BoardViewModel boardViewModel, EventBus eventBus) {
-        this.boardViewModel = boardViewModel;
+    private List<DrawLayer> drawLayers = new LinkedList<>();
+
+    public SimulationCanvas(EventBus eventBus) {
         this.eventBus = eventBus;
-        boardViewModel.getBoard().listen(this::draw);
-        boardViewModel.getCursorPosition().listen(cellPosition -> draw(boardViewModel.getBoard().get()));
 
         this.canvas = new Canvas(400, 400);
         this.canvas.setOnMousePressed(this::handleDraw);
@@ -44,12 +46,18 @@ public class SimulationCanvas extends Pane {
 
     }
 
+    public void addDrawLayer(DrawLayer drawLayer) {
+        drawLayers.add(drawLayer);
+        drawLayers.sort(Comparator.comparingInt(DrawLayer::getLayer));
+        drawLayer.addInvalidationListener(this::draw);
+    }
+
 
 
     @Override
     public void resize(double width, double height) {
         super.resize(width, height);
-        draw(boardViewModel.getBoard().get());
+        draw();
     }
 
     private void handleDraw(MouseEvent event) {
@@ -76,28 +84,15 @@ public class SimulationCanvas extends Pane {
     }
 
 
-    private void draw(Board board) {
+    private void draw() {
         GraphicsContext g = canvas.getGraphicsContext2D();
         g.setTransform(this.affine);
 
         g.setFill(Color.LIGHTGRAY);
         g.fillRect(0, 0, 450, 450);
 
-        drawSimulation(board);
-
-        if (boardViewModel.getCursorPosition().isPresent()) {
-            CellPosition cursor = boardViewModel.getCursorPosition().get();
-            g.setFill(new Color(0.3, 0.3,0.3, 0.5));
-            g.fillRect(cursor.getX(), cursor.getY(), 1, 1);
-        }
-
-        g.setStroke(Color.GRAY);
-        g.setLineWidth(0.05);
-        for (int x = 0; x <= board.getWidth(); x++) {
-            g.strokeLine(x, 0, x, board.getHeight());
-        }
-        for (int y = 0; y <= board.getHeight(); y++) {
-            g.strokeLine(0, y, board.getWidth(), y);
+        for (DrawLayer drawLayer : drawLayers) {
+            drawLayer.draw(g);
         }
     }
 

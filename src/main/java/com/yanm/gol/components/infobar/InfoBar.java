@@ -1,8 +1,7 @@
-package com.yanm.gol.view;
+package com.yanm.gol.components.infobar;
 
 import com.yanm.gol.model.CellPosition;
 import com.yanm.gol.model.CellState;
-import com.yanm.gol.viewmodel.InfoBarViewModel;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;

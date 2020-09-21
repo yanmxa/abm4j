@@ -1,4 +1,4 @@
-package com.yanm.gol.logic.editor;
+package com.yanm.gol.components.editor;
 
 import com.yanm.app.event.Event;
 import com.yanm.gol.model.CellPosition;

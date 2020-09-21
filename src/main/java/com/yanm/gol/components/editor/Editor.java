@@ -1,9 +1,8 @@
-package com.yanm.gol.logic.editor;
+package com.yanm.gol.components.editor;
 
 import com.yanm.app.command.CommandExecutor;
-import com.yanm.gol.logic.ApplicationState;
+import com.yanm.gol.components.simulator.SimulatorEvent;
 import com.yanm.gol.model.CellPosition;
-import com.yanm.gol.state.EditorState;
 
 public class Editor {
 
@@ -34,10 +33,10 @@ public class Editor {
     }
 
 
-    public void onAppStateChanged(ApplicationState state) {
-        if (state == ApplicationState.EDITING) {
+    public void handleSimulatorEvent(SimulatorEvent event) {
+        if (event.getEventType() == SimulatorEvent.Type.RESET) {
             drawingEnabled = true;
-        } else {
+        } else if (event.getEventType() == SimulatorEvent.Type.START || event.getEventType() == SimulatorEvent.Type.STEP){
             drawingEnabled = false;
         }
     }

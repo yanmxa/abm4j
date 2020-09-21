@@ -1,8 +1,8 @@
 package com.yanm.gol.view;
 
 import com.yanm.app.event.EventBus;
-import com.yanm.gol.logic.editor.DrawModeEvent;
-import com.yanm.gol.logic.simulator.SimulatorEvent;
+import com.yanm.gol.components.editor.DrawModeEvent;
+import com.yanm.gol.components.simulator.SimulatorEvent;
 import com.yanm.gol.model.CellState;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
