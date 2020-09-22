@@ -23,14 +23,35 @@ public class Editor {
     }
 
     public void handle(BoardEvent boardEvent) {
+        cursorPositionChanged(boardEvent.getCursorPosition());
+
         switch (boardEvent.getEventType()) {
-            case CURSOR_PRESSED:
-                boardPressed(boardEvent.getCursorPosition());
+            case PRESSED:
+                beginEdit();
+                handleEdit(boardEvent.getCursorPosition());
                 break;
             case CURSOR_MOVED:
-                cursorPositionChanged(boardEvent.getCursorPosition());
+                if(state.getEditInProgress().get()){
+                    handleEdit(boardEvent.getCursorPosition());
+                }
+                break;
+            case RELEASED:
+                handleEdit(boardEvent.getCursorPosition());
+                endEdit();
                 break;
         }
+    }
+
+    private void beginEdit() {
+        state.getEditInProgress().set(true);
+        state.getCurrentEdit().set(new Edits());
+    }
+
+    private void endEdit() {
+        BoardEditCommand editCommand = new BoardEditCommand(state.getCurrentEdit().get());
+        commandExecutor.execute(editCommand);
+        state.getEditInProgress().set(false);
+        state.getCurrentEdit().set(null);
     }
 
 
@@ -42,16 +63,14 @@ public class Editor {
         }
     }
 
-    private void boardPressed(CellPosition cursorPosition) {
-        cursorPositionChanged(cursorPosition);
+    private void handleEdit(CellPosition cursorPosition) {
         if (drawingEnabled) {
             CellState currentState = this.state.getEditorBoard().get().getState(cursorPosition.getX(), cursorPosition.getY());
             CellState newState = this.state.getDrawMode().get();
 
-            if (currentState != newState) {
-                BoardEditCommand command = new BoardEditCommand(cursorPosition, newState, currentState);
-                commandExecutor.execute(command);
-            }
+            Change change = new Change(cursorPosition, newState, currentState);
+
+            state.getCurrentEdit().get().add(change);
         }
     }
 

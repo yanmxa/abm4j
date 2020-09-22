@@ -30,8 +30,9 @@ public class SimulationCanvas extends Pane {
         this.eventBus = eventBus;
 
         this.canvas = new Canvas(400, 400);
-        this.canvas.setOnMousePressed(this::handleDraw);
-        this.canvas.setOnMouseDragged(this::handleDraw);
+        this.canvas.setOnMousePressed(this::handlePressed);
+        this.canvas.setOnMouseDragged(this::handleCursorMoved);
+        this.canvas.setOnMouseReleased(this::handleReleased);
         this.canvas.setOnMouseMoved(this::handleCursorMoved);
 
         this.canvas.widthProperty().bind(this.widthProperty());
@@ -43,6 +44,7 @@ public class SimulationCanvas extends Pane {
         this.affine.appendScale(400 / 10f, 400 / 10f);
 
     }
+
 
     public void addDrawLayer(DrawLayer drawLayer) {
         drawLayers.add(drawLayer);
@@ -58,17 +60,24 @@ public class SimulationCanvas extends Pane {
         draw();
     }
 
-    private void handleDraw(MouseEvent event) {
-        CellPosition cursorPosition = getSimulationCoordinates(event);
-        BoardEvent boardEvent = new BoardEvent(BoardEvent.Type.CURSOR_PRESSED, cursorPosition);
-        eventBus.emit(boardEvent);
-    }
-
-    private void handleCursorMoved(MouseEvent mouseEvent) {
-        CellPosition cursorPosition = this.getSimulationCoordinates(mouseEvent);
+    private void handleCursorMoved(MouseEvent event) {
+        CellPosition cursorPosition = this.getSimulationCoordinates(event);
         BoardEvent boardEvent = new BoardEvent(BoardEvent.Type.CURSOR_MOVED, cursorPosition);
         eventBus.emit(boardEvent);
     }
+
+    private void handleReleased(MouseEvent event) {
+        CellPosition cursorPosition = getSimulationCoordinates(event);
+        BoardEvent boardEvent = new BoardEvent(BoardEvent.Type.RELEASED, cursorPosition);
+        eventBus.emit(boardEvent);
+    }
+
+    private void handlePressed(MouseEvent event) {
+        CellPosition cursorPosition = getSimulationCoordinates(event);
+        BoardEvent boardEvent = new BoardEvent(BoardEvent.Type.PRESSED, cursorPosition);
+        eventBus.emit(boardEvent);
+    }
+
 
     private CellPosition getSimulationCoordinates(MouseEvent event) {
         double mouseX = event.getX();
