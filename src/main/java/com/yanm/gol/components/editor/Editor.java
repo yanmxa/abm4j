@@ -3,6 +3,7 @@ package com.yanm.gol.components.editor;
 import com.yanm.app.command.CommandExecutor;
 import com.yanm.gol.components.simulator.SimulatorEvent;
 import com.yanm.gol.model.CellPosition;
+import com.yanm.gol.model.CellState;
 
 public class Editor {
 
@@ -44,8 +45,13 @@ public class Editor {
     private void boardPressed(CellPosition cursorPosition) {
         cursorPositionChanged(cursorPosition);
         if (drawingEnabled) {
-            BoardEditCommand command = new BoardEditCommand(cursorPosition, state.getDrawMode().get());
-            commandExecutor.execute(command);
+            CellState currentState = this.state.getEditorBoard().get().getState(cursorPosition.getX(), cursorPosition.getY());
+            CellState newState = this.state.getDrawMode().get();
+
+            if (currentState != newState) {
+                BoardEditCommand command = new BoardEditCommand(cursorPosition, newState, currentState);
+                commandExecutor.execute(command);
+            }
         }
     }
 

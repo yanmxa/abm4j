@@ -2,9 +2,7 @@ package com.yanm.gol.view;
 
 import com.yanm.app.event.EventBus;
 import com.yanm.gol.components.editor.BoardEvent;
-import com.yanm.gol.model.Board;
 import com.yanm.gol.model.CellPosition;
-import com.yanm.gol.model.CellState;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -96,16 +94,4 @@ public class SimulationCanvas extends Pane {
         }
     }
 
-    public void drawSimulation(Board simulation2Draw) {
-        GraphicsContext g = canvas.getGraphicsContext2D();
-        g.setFill(Color.BLACK);
-        for (int x = 0; x < simulation2Draw.getWidth(); x++) {
-            for (int y = 0; y < simulation2Draw.getHeight(); y++) {
-                if (simulation2Draw.getState(x, y) == CellState.ALIVE) {
-                    g.fillRect(x, y, 1, 1);
-                }
-
-            }
-        }
-    }
 }
